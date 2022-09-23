@@ -1,0 +1,8 @@
+<h1>Modify Copy </h1>
+
+<%= render partial: 'copies/form', locals: {book: @book, copy: @copy} %>
+<%= button_to 'Remove Copy', [@book, @copy], :method => :delete, class: "btn btn-secondary", form: { data: {
+  turbo_method: :delete,
+  turbo_confirm: 'Are you sure?'
+}} %>
+

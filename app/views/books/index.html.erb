@@ -1,0 +1,51 @@
+<div class='container'>
+  <div class="row">
+    <div class="col">
+      <h1>Books what we have in the library</h1>
+      <table class="table table-bordered table-striped table-hover">
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>ISBN</th>
+        </tr>
+        <% @books.each { |book| %>
+          <tr onmouseover="this.style.cursor='pointer';" onclick="location.href='<%= url_for book_path(book) %>';">
+            <td><%= book.Title %></td>
+            <td><%= book.Author %></td>
+            <td><%= book.ISBN %></td>
+          </tr>
+        <% } %>
+      </table>
+    </div>
+    <div class="col">
+
+      <h1>Books what you have borrowed</h1>
+      <table class="table table-bordered table-striped table-hover">
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>ISBN</th>
+        </tr>
+        <% @books.select { |book| current_user_copy(book) != nil }.each { |book| %>
+          <tr onmouseover="this.style.cursor='pointer';" onclick="location.href='<%= url_for book_path(book) %>';">
+            <td><%= book.Title %></td>
+            <td><%= book.Author %></td>
+            <td><%= book.ISBN %></td>
+          </tr>
+        <% } %>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <%= link_to "Donate a book", '/books/new' %> <br>
+
+      <% if user_signed_in? %>
+        <%= link_to 'Log out', destroy_user_session_path %>
+      <% else %>
+        Want to borrow a book? <%= link_to 'Sign in here', new_user_session_path %> <br>
+        Don't have an account yet? <%= link_to 'Sign up here', new_user_registration_path %>
+      <% end %>
+    </div>
+  </div>
+</div>

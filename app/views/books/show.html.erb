@@ -1,0 +1,58 @@
+<div class = "container">
+  <div class="row">
+    <div class="col">
+      <h1><%= @book.Title %> [<%= @book.ISBN %>]</h1>
+      <h2><%= @book.Author %></h2>
+      <% if user_signed_in?%>
+        <h3>Loan Status: <%= @copy == nil ? "Available for loan" : "Return due on #{@copy.DueDate}" %></h3>
+      <% end %>
+
+      <div class="btn-group " role='group'>
+        <%= button_to 'Edit Book', edit_book_path(@book), class: "btn btn-secondary  m-1", :method => :get  %>
+        <%= button_to 'Remove Book', "/books/#{@book.id}", class: "btn btn-secondary m-1", :method => :delete, data: {
+          turbo_method: :delete,
+          turbo_confirm: 'Are you sure?'
+        } %>
+      </div>
+
+      <% if user_signed_in?%>
+        <% if @copy != nil %>
+          <%= button_to 'Return your copy', [@book, @copy], class: "btn btn-primary m-1", :method => :delete, form: { data: {
+            turbo_method: :delete
+          }} %>
+        <% else %>
+          <%= form_with model: [@book, @book.copies.build] do |f| %>
+            <%= f.hidden_field :Borrower, :value => current_user.email %>
+            <%= f.hidden_field :DueDate, :value =>  14.day.from_now %>
+            <%= f.submit :value => "Borrow a copy" %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="col">
+      <h2>Copies</h2>
+      <table class="table table-bordered table-striped table-hover">
+        <thead>
+          <tr>
+            <th><%= "Name" %></th>
+            <th><%= "Due Date" %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @book.copies.each do |copy| %>
+            <tr onmouseover="this.style.cursor='pointer';"onclick="location.href='<%= url_for "/books/#{@book.id}/copies/#{copy.id}/edit" %>';">
+              <td><%= copy.Borrower %></td>
+              <td><%= copy.DueDate %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <h3>Add a copy:</h3>
+      <%= render partial: "copies/form", locals: {book: @book, copy: @book.copies.build} %>
+
+      <li><%= link_to "All Books", "/books/" %></li>
+    </div>
+  </div>
+</div>
+

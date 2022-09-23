@@ -1,0 +1,11 @@
+<%= bootstrap_form_with model: [book, copy] do |form| %>
+  <p>
+    <%= form.text_field :Borrower, class: "w-25" %>
+  </p>
+  <p>
+    <%= form.date_field :DueDate, label: "Due Date", class: "w-25" %>
+  </p>
+  <p>
+    <%= form.submit %>
+  </p>
+<% end %>
